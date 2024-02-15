@@ -68,6 +68,13 @@ npx electric-sql generate
 # npx electric-sql generate --database-name multimeter_dev --pg-proxy-password proxy_password
 ```
 
+## wa-sqlite
+```
+cd assets
+npm install rhashimoto/wa-sqlite
+cp ./node_modules/wa-sqlite/dist/wa-sqlite-async.* ../priv/static/assets/
+```
+
 ## Troubleshooting
 - When you first create your database, if you also immediately run migrations, you might run into problems if electric hasn't already connected to the newly created database and run its own internal migrations, such as definining any necessary stored procedures that are used for its DDLX.
 - You won't be able to drop your database without stopping the electric server.

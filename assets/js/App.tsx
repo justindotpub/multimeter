@@ -1,11 +1,11 @@
 import React from 'react';
-import ButtonUsage from './ButtonUsage';
+import Example from './Example';
 
 function App() {
   return (
     <div>
-      <h1>Hello, World!</h1>
-      <ButtonUsage />
+      <h1>Hello, Electric!</h1>
+      <Example />
     </div>
   );
 }
