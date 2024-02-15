@@ -8,7 +8,7 @@
 import Config
 
 config :multimeter,
-  ecto_repos: [Multimeter.Repo],
+  ecto_repos: [Multimeter.ProxyRepo],
   generators: [timestamp_type: :utc_datetime]
 
 # Configures the endpoint
