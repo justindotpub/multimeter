@@ -25,13 +25,6 @@ defmodule MultimeterWeb.Endpoint do
     gzip: false,
     only: MultimeterWeb.static_paths()
 
-  # These wasm related files needed to be served at /.
-  plug Plug.Static,
-    at: "/",
-    from: :multimeter,
-    gzip: false,
-    only: ~w(wa-sqlite-async.wasm wa-sqlite-async.mjs)
-
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do

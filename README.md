@@ -69,10 +69,11 @@ npx electric-sql generate
 ```
 
 ## wa-sqlite
+Followed steps at https://electric-sql.com/docs/integrations/drivers/web/wa-sqlite#dependencies with slight changes for Phoenix, making sure wasm files were copied in and served out at the right path.  Also updated `MultimeterWeb.static_paths` to include the wasm dir.
 ```
 cd assets
 npm install rhashimoto/wa-sqlite
-cp ./node_modules/wa-sqlite/dist/wa-sqlite-async.* ../priv/static/assets/
+cp ./node_modules/wa-sqlite/dist/wa-sqlite-async.* ../priv/static/wasm/
 ```
 
 ## Troubleshooting

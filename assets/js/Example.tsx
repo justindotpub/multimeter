@@ -29,8 +29,8 @@ function Example() {
       const { tabId } = uniqueTabId()
       const scopedDbName = `basic-${LIB_VERSION}-${tabId}.db`
 
-      // I'm guessing the second param can be '/wasm' to handle serving wasm files from that folder.
-      const conn = await ElectricDatabase.init(scopedDbName, '')
+      // Make sure wa-sqlite files are copied to priv/static/wasm and Multimeter.Endpoint is configured to serve that folder.
+      const conn = await ElectricDatabase.init(scopedDbName, '/wasm/')
       const electric = await electrify(conn, schema, config)
 
       if (!isMounted) {
