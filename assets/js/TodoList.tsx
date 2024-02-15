@@ -13,7 +13,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 
 const { ElectricProvider, useElectric } = makeElectricContext<Electric>()
 
-function Example() {
+function TodoList() {
   const [electric, setElectric] = useState<Electric>()
 
   useEffect(() => {
@@ -197,4 +197,4 @@ const ExampleComponent = () => {
   );
 }
 
-export default Example;
+export default TodoList;
