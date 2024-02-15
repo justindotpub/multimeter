@@ -80,4 +80,4 @@ cp ./node_modules/wa-sqlite/dist/wa-sqlite-async.* ../priv/static/wasm/
 - When you first create your database, if you also immediately run migrations, you might run into problems if electric hasn't already connected to the newly created database and run its own internal migrations, such as definining any necessary stored procedures that are used for its DDLX.
 - You won't be able to drop your database without stopping the electric server.
 - If you don't use `ELECTRIC_WRITE_TO_PG_MODE=direct_writes` like I do in my `.envrc` then even after stopping electric, you won't be able to drop your db
-  unless you first run some fancy SQL to drop pg subscriptions first.
+  unless you first run some fancy SQL to drop pg subscriptions.
