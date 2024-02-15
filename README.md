@@ -60,6 +60,14 @@ You can start your Phoenix server now as usual.
 iex -S mix phx.server
 ```
 
+## Generating prisma schema
+```
+cd assets
+npx electric-sql generate
+# I had to pass options at one point.  Come back and verify if this is still needed.
+# npx electric-sql generate --database-name multimeter_dev --pg-proxy-password proxy_password
+```
+
 ## Troubleshooting
 - When you first create your database, if you also immediately run migrations, you might run into problems if electric hasn't already connected to the newly created database and run its own internal migrations, such as definining any necessary stored procedures that are used for its DDLX.
 - You won't be able to drop your database without stopping the electric server.
