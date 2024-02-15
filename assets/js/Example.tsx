@@ -6,6 +6,11 @@ import { genUUID, uniqueTabId } from 'electric-sql/util'
 import { ElectricDatabase, electrify } from 'electric-sql/wa-sqlite'
 import { Electric, Items as Item, schema } from './generated/client'
 
+import { List, ListItem, ListItemText, Divider, Typography, TextField, Button, Container, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+
 const { ElectricProvider, useElectric } = makeElectricContext<Electric>()
 
 function Example() {
@@ -53,12 +58,9 @@ function Example() {
   }
 
   return (
-    <>
-      <h2>We are connected</h2>
     <ElectricProvider db={electric}>
       <ExampleComponent />
-      </ElectricProvider>
-    </>
+    </ElectricProvider>
   )
 }
 
@@ -93,26 +95,106 @@ const ExampleComponent = () => {
     await db.items.deleteMany()
   }
 
-  const items: Item[] = results ?? []
+  // todos comes from the live query
+  const todos: Item[] = results ?? []
+  const [newTodo, setNewTodo] = useState({ title: '', description: '' });
+  const [editTodo, setEditTodo] = useState(null);
+  const [editFormData, setEditFormData] = useState({ title: '', description: '' });
+
+  const handleAddTodoChange = (event) => {
+    const { name, value } = event.target;
+    setNewTodo(prevTodo => ({
+      ...prevTodo,
+      [name]: value,
+    }));
+  };
+
+  const handleEditChange = (event) => {
+    console.log('event.target', event.target)
+    const { name, value } = event.target;
+    setEditFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
+  const handleAddTodo = async () => {
+    if (!newTodo.title.trim()) return;
+    await db.items.create({
+      data: {
+        id: genUUID(),
+        title: newTodo.title,
+        description: newTodo.description
+      }
+    })
+
+    setNewTodo({ title: '', description: '' });
+  };
+
+  const handleDeleteTodo = async (id) => {
+    await db.items.delete({
+      where: {
+        id
+      }
+    })
+  };
+
+  const handleEditTodo = (todo) => {
+    setEditTodo(todo.id);
+    setEditFormData({ title: todo.title, description: todo.description });
+  };
+
+  const handleSaveEditTodo = async (id) => {
+    await db.items.update({
+      where: {
+        id
+      },
+      data: {
+        title: editFormData.title,
+        description: editFormData.description
+      }
+    })
+    setEditTodo(null);
+  };
 
   return (
-    <div>
-      <h2>Items</h2>
-      <div className="controls">
-        <button className="button" onClick={ addItem }>
-          Add
-        </button>
-        <button className="button" onClick={ clearItems }>
-          Clear
-        </button>
+    <Container>
+      <Typography variant="h6" sx={{ marginTop: 2 }}>Todo List</Typography>
+      <div>
+        <TextField label="Title" name="title" variant="outlined" size="small" value={newTodo.title || ""} onChange={handleAddTodoChange} />
+        <TextField label="Description" name="description" variant="outlined" size="small" value={newTodo.description || ""} onChange={handleAddTodoChange} />
+        <Button startIcon={<AddBoxIcon />} onClick={handleAddTodo}>Add Todo</Button>
       </div>
-      {items.map((item: Item, index: number) => (
-        <p key={ index } className="item">
-          <code>{ item.title }</code>
-        </p>
-      ))}
-    </div>
-  )
+      <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+        {todos.map((todo) => (
+          <React.Fragment key={todo.id}>
+            {editTodo === todo.id ? (
+              <ListItem id={todo.id}>
+                <TextField label="Title" name="title" variant="outlined" size="small" value={editFormData.title || ""} onChange={handleEditChange} />
+                <TextField label="Description" name="description" variant="outlined" size="small" value={editFormData.description || ""} onChange={handleEditChange} />
+                <Button onClick={() => handleSaveEditTodo(todo.id)}>Save</Button>
+              </ListItem>
+            ) : (
+              <ListItem id={todo.id}
+                secondaryAction={
+                  <>
+                    <IconButton edge="end" onClick={() => handleEditTodo(todo)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton edge="end" onClick={() => handleDeleteTodo(todo.id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </>
+                }>
+                <ListItemText primary={todo.title} secondary={todo.description} />
+              </ListItem>
+            )}
+            <Divider />
+          </React.Fragment>
+        ))}
+      </List>
+    </Container>
+  );
 }
 
 export default Example;
