@@ -19,7 +19,11 @@ defmodule Multimeter.MixProject do
   def application do
     [
       mod: {Multimeter.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools],
+      env: [
+        # By default, do not run the ElectricSQL server
+        serve_electric: false
+      ]
     ]
   end
 
@@ -49,7 +53,13 @@ defmodule Multimeter.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.2"}
+      {:bandit, "~> 1.2"},
+      {:electric,
+       github: "electric-sql/electric",
+       sparse: "components/electric",
+       branch: "main",
+       runtime: false,
+       only: :dev}
     ]
   end
 
@@ -61,6 +71,12 @@ defmodule Multimeter.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
+      # Make sure create and drop use the Repo, not ProxyRepo,
+      # so we don't require Electric to be running.
+      "ecto.create": ["ecto.create -r Multimeter.Repo"],
+      "ecto.drop": ["ecto.drop -r Multimeter.Repo"],
+      # Ensure that generated migrations are named correctly
+      "ecto.gen.migration": ["ecto.gen.migration -r Multimeter.Repo"],
       setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
